@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/Current/bin
 
@@ -266,6 +266,11 @@ showDebugInfo() {
     cat "$HOME/.ssh/config"
   fi
   cat $_conf_filename
+
+  virsh list --all
+  for vm in $(virsh list --state-running --name); do echo "$vm: " && virsh domiflist $vm; done
+  virsh net-dhcp-leases default
+  arp -a
 
   echo "===================Debug Info in VM============="
   ssh "$osname" sh <<EOF
